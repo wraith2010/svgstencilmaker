@@ -21,24 +21,7 @@ public class Engine {
 	private static final String KEY_CY = "cy=";
 	private static final String KEY_R = "r=";
 
-	// <path d="M600,350 l 50,-25
-	// a25,25 -30 0,1 50,-25 l 50,-25
-	// a25,50 -30 0,1 50,-25 l 50,-25
-	// a25,75 -30 0,1 50,-25 l 50,-25
-	// a25,100 -30 0,1 50,-25 l 50,-25"
-	// fill="none" stroke="red" stroke-width="5" />
-
-	// private static final String PATH_BEZIER_CURVES = "<path d=\"M10 10 C 20 20,
-	// 40 20, 50 10\" stroke=\"black\" fill=\"transparent\"/>\n";
-	private static final String PATH_BEZIER_CURVES = "<path d=\"M%s %s C %s %s, %s %s, %s %s\" stroke=\"green\" fill=\"none\"/>\n";
-
-	//
-	// style="fill:
-	// part[5]: none;stroke:
-	// part[6]: red;stroke-linecap:
-	// part[7]: round;stroke-miterlimit:
-	// part[8]: 10;stroke-width:
-	// part[9]: 0.25px"
+	private static final String PATH_ARC = "<path d=\"M%s %S A %s,%s %s, %s, %s, %s, %s \" style=\"fill:none;stroke:red;stroke-width:0.25px\" />\n";
 
 	public void process(String file) {
 
@@ -91,7 +74,7 @@ public class Engine {
 			return whiteSpace + processCircle(parts);
 
 		case KEY_LINE:
-			return whiteSpace + line;
+			return whiteSpace + processLine(parts);
 
 		case KEY_PATH:
 			return whiteSpace + line;
@@ -106,8 +89,18 @@ public class Engine {
 	private String getOutputFileName(String file) {
 
 		int lastDot = file.lastIndexOf('.');
+
 		return file.substring(0, lastDot) + "-stencil.svg";
 
+	}
+
+	private String processLine(String[] parts) {
+
+//		for (int index = 0; index < parts.length; index++) {
+//			System.out.println(String.format("parts[%s]:\t%s", index, parts[index]));
+//		}
+
+		return String.join(" ", parts);
 	}
 
 	private String processCircle(String[] parts) {
@@ -134,16 +127,9 @@ public class Engine {
 
 		}
 
-		System.out.println("xCenter = " + xCenter);
-		System.out.println("yCenter = " + yCenter);
-		System.out.println("radius = " + radius);
+		subPaths.addAll(generateArchs(xCenter, yCenter, radius));
 
-		// subPaths.add(String.format(PATH_ARC, xCenter - radius, yCenter));
-		subPaths.add(generateArch(xCenter, yCenter, radius));
-
-		String orginal = String.join(" ", parts);
-
-		return orginal + "\n" + String.join("\n", subPaths);
+		return String.join("\n", subPaths);
 	}
 
 	private double fetchValue(String section) {
@@ -151,10 +137,26 @@ public class Engine {
 		return Double.parseDouble(section.split("\"")[1]);
 	}
 
-	private static final String PATH_ARC = "<path d=\"M%s %S A%s %s 0 1 %s %s %s\"  fill=\"none\" stroke=\"red\" />\n";
+	private List<String> generateArchs(double x, double y, double radius) {
+		List<String> arches = new ArrayList<>();
 
-	private String generateArch(double x, double y, double radius) {
-		return String.format(PATH_ARC, x - radius, y, radius, x - radius, y, x, y - radius);
+		arches.add(generateArch(x, y, radius, 5, 85));
+		arches.add(generateArch(x, y, radius, 95, 175));
+		arches.add(generateArch(x, y, radius, 185, 265));
+		arches.add(generateArch(x, y, radius, 275, 355));
+
+		return arches;
+	}
+
+	private String generateArch(double x, double y, double radius, double startAngle, double stopAngle) {
+
+		double xStart = x + (radius * Math.cos(Math.toRadians(startAngle)));
+		double yStart = y + (radius * Math.sin(Math.toRadians(startAngle)));
+		double xStop = x + (radius * Math.cos(Math.toRadians(stopAngle)));
+		double yStop = y + (radius * Math.sin(Math.toRadians(stopAngle)));
+
+		return String.format(PATH_ARC, xStart, yStart, radius, radius, 0, 0, 1, xStop, yStop);
+
 	}
 
 }
