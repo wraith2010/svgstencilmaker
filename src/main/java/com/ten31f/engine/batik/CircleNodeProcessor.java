@@ -1,5 +1,6 @@
 package com.ten31f.engine.batik;
 
+import java.text.DecimalFormat;
 import java.util.logging.Logger;
 
 import org.w3c.dom.Element;
@@ -12,7 +13,7 @@ public class CircleNodeProcessor {
 	private static final String ATTRIBUTE_CY = "cy";
 	private static final String ATTRIBUTE_R = "r";
 
-	private static final String PATH_ARC = "M%s %sa%s,%s%s,%s,%s,%s,%s ";
+	private static final String PATH_ARC = "M%s %S A %s,%s %s, %s, %s, %s, %s";
 
 	private static final Logger LOGGER = Logger.getLogger(CircleNodeProcessor.class.getName());
 
@@ -53,9 +54,13 @@ public class CircleNodeProcessor {
 
 		Element pathElement = targetNode.getOwnerDocument().createElement(BatikEngine.NODE_NAME_PATH);
 
-		pathElement.setAttribute(BatikEngine.ATTRIBUTE_D,
-				String.format(PATH_ARC, xStart, yStart, radius, radius, 0, 0, 1, xStop, yStop));
+		DecimalFormat decimalFormat = new DecimalFormat("#.##");
+
 		pathElement.setAttribute(BatikEngine.ATTRIBUTE_STYLE, BatikEngine.STYLE_TEXT);
+		pathElement.setAttribute(BatikEngine.ATTRIBUTE_D,
+				String.format(PATH_ARC, decimalFormat.format(xStart), decimalFormat.format(yStart),
+						decimalFormat.format(radius), decimalFormat.format(radius), 0, 0, 1,
+						decimalFormat.format(xStop), decimalFormat.format(yStop)));
 
 		targetNode.appendChild(pathElement);
 	}

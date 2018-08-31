@@ -1,7 +1,7 @@
 package com.ten31f.engine.batik;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.logging.Logger;
 
 import javax.xml.XMLConstants;
@@ -45,7 +45,9 @@ public class BatikEngine extends AbstractEngine implements Engine {
 		proccessNode(sourceSVGDocument.getChildNodes().item(0), outputSVGDocument.getChildNodes().item(0));
 
 		try {
-			LOGGER.info(toString(outputSVGDocument.getChildNodes().item(0)));
+			String newFileName = getOutputFileName(file);
+			createFile(outputSVGDocument.getChildNodes().item(0), newFileName);
+			LOGGER.info("New file: " + newFileName);
 		} catch (TransformerException transformerException) {
 			LOGGER.throwing(BatikEngine.class.getName(), "process", transformerException);
 		}
@@ -66,6 +68,7 @@ public class BatikEngine extends AbstractEngine implements Engine {
 			break;
 
 		case NODE_NAME_SVG:
+			SVGNodeProcessor.process(sourcenode, targetNode);
 			appendedNode = targetNode;
 			break;
 
@@ -99,16 +102,21 @@ public class BatikEngine extends AbstractEngine implements Engine {
 		return SVGDOMImplementation.getDOMImplementation().createDocument(svgNS, "svg", null);
 	}
 
-	private String toString(Node node) throws TransformerException {
+	private void createFile(Node node, String fileName) throws TransformerException {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
 		Transformer transformer = transformerFactory.newTransformer();
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 
-		StringWriter writer = new StringWriter();
-		transformer.transform(new DOMSource(node), new StreamResult(writer));
-		return writer.toString();
+		transformer.transform(new DOMSource(node), new StreamResult(new File(fileName)));
+
 	}
+
+	// Transformer transformer = TransformerFactory.newInstance().newTransformer();
+	// Result output = new StreamResult(new File("output.xml"));
+	// Source input = new DOMSource(myDocument);
+	//
+	// transformer.transform(input, output);
 
 }

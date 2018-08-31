@@ -11,16 +11,7 @@ import com.ten31f.engine.string.StringParserEngine;
 
 public class EngineTest {
 
-	@Test
-	public void mainEngineTest() throws URISyntaxException, IOException {
 
-		ClassLoader classLoader = getClass().getClassLoader();
-		File file = new File(classLoader.getResource("test-imgs/fire-fly.svg").getFile());
-
-		Engine engine = new StringParserEngine();
-		engine.process(file.getAbsolutePath());
-
-	}
 
 	@Test
 	public void batikEngineFireFlyTest() throws IOException {
@@ -32,4 +23,14 @@ public class EngineTest {
 		engine.process(file.getAbsolutePath());
 	}
 
+	@Test
+	public void batikEngineCStencilTest() throws IOException {
+
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("test-imgs/c-stencil-01.svg").getFile());
+
+		Engine engine = new BatikEngine();
+		engine.process(file.getAbsolutePath());
+	}
+	
 }
