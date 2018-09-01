@@ -1,27 +1,22 @@
 package com.ten31f.engine.batik;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 public class SVGNodeProcessor {
 
-//	contentScriptType
-//	width
-//	xmlns:xlink
-//	zoomAndPan
-//	contentStyleType
-//	viewBox
-//	height
-//	id
-//	data-name
-//	preserveAspectRatio
-//	xmlns
-//	version
-	
-	private static final Logger LOGGER = Logger.getLogger(SVGNodeProcessor.class.getName());
+	// contentScriptType
+	// width
+	// xmlns:xlink
+	// zoomAndPan
+	// contentStyleType
+	// viewBox
+	// height
+	// id
+	// data-name
+	// preserveAspectRatio
+	// xmlns
+	// version
 
 	private static final String ATTRIBUTE_WIDTH = "width";
 	private static final String ATTRIBUTE_HEIGHT = "height";

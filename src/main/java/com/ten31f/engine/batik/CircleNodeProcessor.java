@@ -9,11 +9,18 @@ import org.w3c.dom.Node;
 
 public class CircleNodeProcessor {
 
+	private static final String STYLE_TEXT = "fill:none;stroke:red;stroke-width:0.25px";
+	
+	private static final String PATH_ARC = "M%s %S A %s,%s %s, %s, %s, %s, %s";
+	
 	private static final String ATTRIBUTE_CX = "cx";
 	private static final String ATTRIBUTE_CY = "cy";
 	private static final String ATTRIBUTE_R = "r";
 
-	private static final String PATH_ARC = "M%s %S A %s,%s %s, %s, %s, %s, %s";
+	private static final String ATTRIBUTE_D = "d";
+	private static final String ATTRIBUTE_STYLE = "style";
+
+	private static final String NODE_NAME_PATH = "path";
 
 	private static final Logger LOGGER = Logger.getLogger(CircleNodeProcessor.class.getName());
 
@@ -52,12 +59,12 @@ public class CircleNodeProcessor {
 		double xStop = x + (radius * Math.cos(Math.toRadians(stopAngle)));
 		double yStop = y + (radius * Math.sin(Math.toRadians(stopAngle)));
 
-		Element pathElement = targetNode.getOwnerDocument().createElement(BatikEngine.NODE_NAME_PATH);
+		Element pathElement = targetNode.getOwnerDocument().createElement(NODE_NAME_PATH);
 
 		DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-		pathElement.setAttribute(BatikEngine.ATTRIBUTE_STYLE, BatikEngine.STYLE_TEXT);
-		pathElement.setAttribute(BatikEngine.ATTRIBUTE_D,
+		pathElement.setAttribute(ATTRIBUTE_STYLE, STYLE_TEXT);
+		pathElement.setAttribute(ATTRIBUTE_D,
 				String.format(PATH_ARC, decimalFormat.format(xStart), decimalFormat.format(yStart),
 						decimalFormat.format(radius), decimalFormat.format(radius), 0, 0, 1,
 						decimalFormat.format(xStop), decimalFormat.format(yStop)));
